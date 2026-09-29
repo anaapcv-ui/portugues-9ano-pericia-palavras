@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perícia das Palavras · Quiz</title>
+<style>
+:root{--bg:#0a1120;--panel:#111d33;--panel2:#0e1830;--ink:#e9f0fb;--muted:#93a6c4;
+--lupa:#35f0a0;--lupa-d:#12b877;--pista:#ffb020;--alerta:#ff5a76;--line:#243654;--shadow:0 10px 30px rgba(0,0,0,.45);}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(1200px 700px at 80% -10%,#12233f 0,var(--bg) 60%);color:var(--ink);font-family:"Segoe UI",system-ui,sans-serif;line-height:1.6}
+.wrap{max-width:840px;margin:0 auto;padding:20px 16px 80px}
+header.top{background:linear-gradient(120deg,#123a2e,#0e6b58 60%,#12b877);border-radius:18px;padding:22px 24px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+header.top:before{content:"🎯";position:absolute;right:14px;top:-4px;font-size:76px;opacity:.16}
+header.top h1{margin:0 0 4px;font-size:1.5rem;color:#04140d}
+header.top .sub{color:#06251a;font-weight:600}
+.kick{display:inline-block;background:#04140d;color:#7dffc4;font-size:.72rem;font-weight:700;letter-spacing:.12em;padding:4px 10px;border-radius:999px;margin-bottom:8px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px 20px;margin:16px 0;box-shadow:var(--shadow)}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+.btn{background:#16264180;color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:8px 14px;font-size:.9rem;cursor:pointer}
+.btn:hover{border-color:var(--lupa);color:var(--lupa)}
+.btn.primary{background:linear-gradient(120deg,var(--lupa-d),var(--lupa));color:#04140d;font-weight:700;border:none}
+.btn.primary:disabled{opacity:.45;cursor:not-allowed;filter:grayscale(.4)}
+.saveinfo{font-size:.78rem;color:var(--muted)}
+.q{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin:14px 0;box-shadow:var(--shadow)}
+.q .num{font-weight:700;color:var(--lupa)}
+.q .txt{margin:6px 0 12px}
+.op{display:block;border:1px solid var(--line);background:var(--panel2);border-radius:10px;padding:10px 14px;margin:8px 0;cursor:pointer;transition:.12s}
+.op:hover{border-color:var(--lupa)}
+.op.sel{border-color:var(--lupa);background:#0e2a1e}
+.op .l{font-weight:700;color:var(--pista);margin-right:8px}
+.op.correct{border-color:var(--lupa);background:#0e2a1e}
+.op.wrong{border-color:var(--alerta);background:#2a0a12}
+.why{font-size:.86rem;margin-top:6px;display:none}
+.op.correct .why{display:block;color:#9dffcf}
+.op.wrong .why{display:block;color:#ffb7c4}
+.locked .op{cursor:default;pointer-events:none}
+.codebox{background:#0c1730;border:1px solid var(--pista);border-radius:12px;padding:16px 18px;margin:16px 0;display:none}
+.codebox input{background:#0a1426;border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:8px 12px;font-size:1rem;width:150px;letter-spacing:.05em;text-transform:uppercase}
+.result{font-size:1.1rem;font-weight:700;margin:8px 0}
+.big{font-size:1.6rem;color:var(--pista);letter-spacing:.08em}
+.modal-bg{position:fixed;inset:0;background:rgba(4,8,18,.7);display:none;align-items:center;justify-content:center;z-index:50;padding:20px}
+.modal{background:var(--panel);border:1px solid var(--line);border-radius:16px;max-width:440px;padding:22px;box-shadow:var(--shadow)}
+.modal .row{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
+.nav{display:flex;justify-content:space-between;margin-top:22px;flex-wrap:wrap;gap:10px}
+a.next,a.prev{display:inline-block;text-decoration:none;padding:11px 18px;border-radius:12px;font-weight:700}
+a.next{background:linear-gradient(120deg,var(--lupa-d),var(--lupa));color:#04140d}
+a.prev{background:#16264180;color:var(--ink);border:1px solid var(--line)}
+.foot{text-align:center;color:var(--muted);font-size:.8rem;margin-top:30px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span class="kick">PERÍCIA DAS PALAVRAS · TREINO RÁPIDO</span>
+    <h1>🎯 Quiz — 18 casos objetivos</h1>
+    <div class="sub">Classifique o “que” e o “se” · reconheça a citação</div>
+  </header>
+
+  <div class="panel">
+    <div class="bar">
+      <div><strong>Painel do perito</strong><div class="saveinfo" id="saveinfo">Suas respostas salvam sozinhas.</div></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn" onclick="doExport()">📥 Exportar</button>
+        <button class="btn" onclick="document.getElementById('imp').click()">📤 Importar</button>
+        <button class="btn" onclick="askReset()">🗑️ Zerar</button>
+        <input type="file" id="imp" accept="application/json" style="display:none" onchange="doImport(event)">
+      </div>
+    </div>
+    <div class="saveinfo" id="prog" style="margin-top:6px">0 de 18 respondidas.</div>
+  </div>
+
+  <p class="panel" style="background:#0c1730">Marque uma alternativa por questão. Responda <b>todas</b> para liberar o envio.
+  Depois de enviar, você recebe um <b>código MED</b> e o <b>gabarito comentado</b> (a certa em verde, as erradas em cinza com o porquê).</p>
+
+  <div id="quiz"></div>
+
+  <button class="btn primary" id="enviar" onclick="enviar()" disabled style="width:100%;padding:14px;font-size:1rem">📨 Enviar respostas</button>
+
+  <div class="codebox" id="codebox">
+    <div class="result">Você acertou <span class="big" id="acertos">0</span> de 18.</div>
+    <p>Seu código para liberar o gabarito e mostrar aos pais:</p>
+    <p class="big" id="codigo">MED-00-XX</p>
+    <p class="saveinfo">Digite o código abaixo para ver o gabarito comentado (ele fica salvo).</p>
+    <input id="codein" placeholder="MED-00-XX" maxlength="9">
+    <button class="btn primary" onclick="verGabarito()">Ver gabarito</button>
+    <div class="saveinfo" id="codemsg" style="margin-top:8px"></div>
+  </div>
+
+  <div class="nav">
+    <a class="prev" href="leitura-guiada.html">← Leitura Guiada</a>
+    <a class="next" href="resumo.html">Próximo: 🗺️ Resumo →</a>
+  </div>
+  <div class="foot">Perícia das Palavras · Quiz · jovem aprendiz</div>
+</div>
+
+<div class="modal-bg" id="modalbg"><div class="modal"><h3 id="mtit"></h3><p id="mtxt" style="color:var(--muted)"></p>
+  <div class="row"><button class="btn" onclick="closeModal()">Cancelar</button><button class="btn primary" id="mok">OK</button></div></div></div>
+
+<script>
+const QS=[
+{q:"Fazer uma <b>citação</b> em um texto significa:",
+ ops:[
+  {t:"trazer a fala, a ideia ou os dados de outra fonte para dar credibilidade ao argumento.",ok:true,why:"Certo: citar é usar uma fonte confiável para fortalecer o que se defende."},
+  {t:"copiar um texto inteiro de outra pessoa sem indicar o autor.",ok:false,why:"Isso é plágio, não citação; a citação sempre indica a fonte."},
+  {t:"inventar uma frase e atribuí-la a um autor famoso.",ok:false,why:"Citação exige fonte verdadeira e citada corretamente."},
+  {t:"resumir o próprio texto na conclusão.",ok:false,why:"Resumir o próprio texto não é trazer uma fonte externa."}
+ ]},
+{q:"Para uma citação cumprir seu papel, a fonte deve ser:",
+ ops:[
+  {t:"citada corretamente (autor e obra), para o leitor poder conferir.",ok:true,why:"Certo: sem a fonte correta o leitor não confere e a citação perde valor."},
+  {t:"escondida, para valorizar o autor do texto.",ok:false,why:"Esconder a fonte tira a credibilidade — o contrário do objetivo."},
+  {t:"sempre uma celebridade, mesmo sem relação com o tema.",ok:false,why:"O que importa é ser confiável e ter relação com o tema, não ser famosa."},
+  {t:"trocada por outra que combine melhor com a opinião do autor.",ok:false,why:"Alterar a fonte é desonesto; a citação deve ser fiel."}
+ ]},
+{q:"Uma citação que <b>não tem relação</b> com o tema do texto:",
+ ops:[
+  {t:"empobrece o texto e confunde o leitor.",ok:true,why:"Certo: citação fora de contexto enfraquece o argumento."},
+  {t:"sempre melhora o texto, porque toda citação é boa.",ok:false,why:"Nem toda citação ajuda; precisa combinar com o tema."},
+  {t:"não faz diferença nenhuma.",ok:false,why:"Faz sim: quebra a coerência do texto."},
+  {t:"deve ser mantida para deixar o texto mais longo.",ok:false,why:"Tamanho não é qualidade; a coerência é que importa."}
+ ]},
+{q:"Apresentar números de pesquisas e índices de um órgão confiável serve para:",
+ ops:[
+  {t:"dar credibilidade, aproximando o texto da realidade.",ok:true,why:"Certo: dados concretos de fonte confiável reforçam o argumento."},
+  {t:"deixar o texto mais difícil de entender.",ok:false,why:"O objetivo é convencer, não dificultar."},
+  {t:"substituir totalmente a opinião do autor.",ok:false,why:"Os dados apoiam a opinião; não a eliminam."},
+  {t:"enfeitar o texto, sem função real.",ok:false,why:"Dados têm função clara: comprovar."}
+ ]},
+{q:"Em “Os países <b>que</b> assinaram o tratado estarão na assembleia”, o “que” é:",
+ ops:[
+  {t:"pronome relativo (retoma o antecedente “os países”).",ok:true,why:"Certo: tem antecedente e cabe “os quais”."},
+  {t:"conjunção integrante.",ok:false,why:"Integrante não tem antecedente; aqui há “os países”."},
+  {t:"conjunção consecutiva.",ok:false,why:"Não há “tão/tanto… que” nem ideia de consequência."},
+  {t:"advérbio de intensidade.",ok:false,why:"Não intensifica nada; retoma um nome."}
+ ]},
+{q:"Em “Todos afirmaram <b>que</b> lutarão pela paz”, o “que” é:",
+ ops:[
+  {t:"conjunção integrante (introduz oração que completa o verbo “afirmar”).",ok:true,why:"Certo: sem antecedente e a oração troca por “isso” (“afirmaram isso”)."},
+  {t:"pronome relativo.",ok:false,why:"Não há antecedente para o “que” retomar."},
+  {t:"conjunção coordenativa.",ok:false,why:"Ele não liga orações independentes; completa o verbo."},
+  {t:"advérbio.",ok:false,why:"Não indica intensidade nem circunstância."}
+ ]},
+{q:"O “que” que pode ser substituído por <b>“o qual / a qual”</b> é:",
+ ops:[
+  {t:"o pronome relativo.",ok:true,why:"Certo: só o relativo, que retoma um antecedente, aceita “o qual”."},
+  {t:"a conjunção integrante.",ok:false,why:"Sem antecedente, “o qual” não cabe."},
+  {t:"a conjunção consecutiva.",ok:false,why:"“Tão… o qual” não existe."},
+  {t:"a conjunção coordenativa.",ok:false,why:"Coordenativa liga orações; não retoma nome."}
+ ]},
+{q:"Em “Ficou tão surpreso <b>que</b> derrubou o prato”, o “que” indica:",
+ ops:[
+  {t:"consequência (conjunção subordinativa consecutiva).",ok:true,why:"Certo: “tão… que” marca o resultado."},
+  {t:"condição.",ok:false,why:"Condição usaria “se”, não “tão… que”."},
+  {t:"comparação.",ok:false,why:"Comparação seria “mais/menos… que”."},
+  {t:"causa.",ok:false,why:"A ideia é de resultado, não de motivo."}
+ ]},
+{q:"Em “Mantenha a fé, <b>que</b> o amanhã promete”, o “que” equivale a:",
+ ops:[
+  {t:"“pois” (conjunção coordenativa explicativa).",ok:true,why:"Certo: dá a explicação/justificativa do que foi dito."},
+  {t:"“e” (aditiva).",ok:false,why:"Não soma ideias; explica."},
+  {t:"“mas” (adversativa).",ok:false,why:"Não há oposição."},
+  {t:"“se” (condição).",ok:false,why:"Não há condição."}
+ ]},
+{q:"Em “<b>Que</b> lindo ficou o mural da paz!”, a palavra “Que” é:",
+ ops:[
+  {t:"advérbio de intensidade (equivale a “quão”).",ok:true,why:"Certo: intensifica o adjetivo “lindo”."},
+  {t:"pronome relativo.",ok:false,why:"Não retoma nenhum nome."},
+  {t:"conjunção integrante.",ok:false,why:"Não completa verbo nem introduz oração substantiva."},
+  {t:"substantivo.",ok:false,why:"Substantivo seria “um quê de mistério”, não este caso."}
+ ]},
+{q:"Em “As pessoas <b>que</b>¹ acham <b>que</b>² não cabe a elas se envolver”, os dois “que” são, na ordem:",
+ ops:[
+  {t:"1º pronome relativo e 2º conjunção integrante.",ok:true,why:"Certo: 1º retoma “as pessoas”; 2º completa o verbo “acham”."},
+  {t:"1º conjunção integrante e 2º pronome relativo.",ok:false,why:"Está invertido: o 1º tem antecedente “pessoas”."},
+  {t:"ambos pronomes relativos.",ok:false,why:"O 2º não retoma nome; completa “acham”."},
+  {t:"ambos conjunções integrantes.",ok:false,why:"O 1º retoma “as pessoas”, logo é relativo."}
+ ]},
+{q:"Em “O presidente perguntou <b>se</b> todos assinariam o acordo”, o “se” é:",
+ ops:[
+  {t:"conjunção integrante (a oração completa o verbo “perguntar”).",ok:true,why:"Certo: troca por “isso” (“perguntou isso”)."},
+  {t:"conjunção condicional.",ok:false,why:"Não há condição; vem depois de “perguntar”."},
+  {t:"pronome reflexivo.",ok:false,why:"Não indica ação sobre o próprio sujeito."},
+  {t:"partícula apassivadora.",ok:false,why:"Não há voz passiva sintética aqui."}
+ ]},
+{q:"Em “<b>Se</b> todos colaborarem, viveremos em paz”, o “se” é:",
+ ops:[
+  {t:"conjunção subordinativa adverbial condicional.",ok:true,why:"Certo: abre uma condição (se… então)."},
+  {t:"conjunção integrante.",ok:false,why:"Não completa um verbo; apresenta condição."},
+  {t:"pronome reflexivo.",ok:false,why:"Não age sobre o sujeito."},
+  {t:"partícula de realce.",ok:false,why:"Não é dispensável; muda tudo se retirado."}
+ ]},
+{q:"Em “Vende<b>m</b>-se casas”, o “se” é:",
+ ops:[
+  {t:"partícula apassivadora (voz passiva sintética).",ok:true,why:"Certo: verbo transitivo direto; “casas” é sujeito e o verbo concorda (vendem)."},
+  {t:"índice de indeterminação do sujeito.",ok:false,why:"Aqui há sujeito (“casas”); o verbo até vai ao plural."},
+  {t:"pronome reflexivo.",ok:false,why:"As casas não vendem a si mesmas."},
+  {t:"conjunção integrante.",ok:false,why:"Não introduz oração substantiva."}
+ ]},
+{q:"Em “Precisa-se <b>de</b> voluntários”, o “se” é:",
+ ops:[
+  {t:"índice de indeterminação do sujeito.",ok:true,why:"Certo: verbo transitivo indireto (“precisar de”), sem sujeito definido, verbo no singular."},
+  {t:"partícula apassivadora.",ok:false,why:"Apassivadora só com verbo transitivo direto; aqui há “de”."},
+  {t:"pronome reflexivo.",ok:false,why:"Não há ação sobre o próprio sujeito."},
+  {t:"conjunção condicional.",ok:false,why:"Não abre condição."}
+ ]},
+{q:"Em “Os embaixadores queixaram-<b>se</b> da falta de acordo”, o “se” é:",
+ ops:[
+  {t:"partícula integrante do verbo pronominal.",ok:true,why:"Certo: “queixar-se” só existe com “se” — ele faz parte do verbo."},
+  {t:"pronome reflexivo.",ok:false,why:"Não é “a si mesmo”; é um verbo essencialmente pronominal."},
+  {t:"partícula de realce.",ok:false,why:"Não dá para retirar sem quebrar o verbo."},
+  {t:"partícula apassivadora.",ok:false,why:"Não há voz passiva."}
+ ]},
+{q:"Em “Os governantes riram-<b>se</b> das propostas”, o “se” pode ser retirado sem mudar o sentido; ele é:",
+ ops:[
+  {t:"partícula de realce (expletiva).",ok:true,why:"Certo: “riram” existe sem o “se”; ele só enfatiza."},
+  {t:"partícula integrante do verbo.",ok:false,why:"“Rir” existe sem “se”, então não é parte obrigatória."},
+  {t:"pronome reflexivo.",ok:false,why:"Não riram de si mesmos."},
+  {t:"conjunção integrante.",ok:false,why:"Não introduz oração substantiva."}
+ ]},
+{q:"Em “Os países enganaram-<b>se</b> durante as negociações” (um ao outro), o “se” é:",
+ ops:[
+  {t:"pronome reflexivo recíproco (um ao outro).",ok:true,why:"Certo: a ação é trocada entre os países."},
+  {t:"pronome reflexivo (a si mesmo, sem troca).",ok:false,why:"O contexto mostra troca mútua, logo é recíproco."},
+  {t:"partícula apassivadora.",ok:false,why:"Não há voz passiva sintética."},
+  {t:"índice de indeterminação do sujeito.",ok:false,why:"Há sujeito claro: “os países”."}
+ ]}
+];
+
+/* ---------- utilidades ---------- */
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return ((t^t>>>14)>>>0)/4294967296;};}
+function shuffle(arr,rng){const a=arr.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(rng()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+const LET="ABCDEFGHJKLMNPQRSTUVWXYZ"; // sem I e O
+const ALPHA=["A","B","C","D"];
+
+const KEY="pericia_quiz";
+let mem={};
+function load(){try{const r=localStorage.getItem(KEY);return r?JSON.parse(r):null;}catch(e){return mem[KEY]||null;}}
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(STATE));}catch(e){mem[KEY]=STATE;}stamp();}
+let STATE=load()||{resp:{},enviado:false,acertos:null,codigo:null,liberado:false,ts:null,ordem:null};
+
+/* ordem das alternativas: correta num slot rotativo (A,B,C,D…) + resto embaralhado (semente fixa).
+   Garante distribuição das letras e reprodutibilidade. */
+function montarOrdem(q,qi){
+  const n=q.ops.length, target=qi%n;
+  const correct=q.ops.findIndex(o=>o.ok);
+  const rng=mulberry32(9290+qi*37);
+  const others=shuffle(q.ops.map((_,i)=>i).filter(i=>i!==correct),rng);
+  const order=[]; let oi=0;
+  for(let pos=0;pos<n;pos++){ order.push(pos===target?correct:others[oi++]); }
+  return order;
+}
+if(!STATE.ordem){ STATE.ordem=QS.map((q,qi)=>montarOrdem(q,qi)); }
+function stamp(){STATE.ts=new Date().toISOString();const d=new Date(STATE.ts);
+  document.getElementById('saveinfo').textContent="Salvo às "+d.toLocaleTimeString('pt-BR')+" ("+d.toLocaleDateString('pt-BR')+").";}
+
+/* ---------- render ---------- */
+const cont=document.getElementById('quiz');
+QS.forEach((q,qi)=>{
+  const div=document.createElement('div');div.className='q';div.id='q'+qi;
+  let ops="";
+  STATE.ordem[qi].forEach((origIdx,pos)=>{
+    const o=q.ops[origIdx];
+    ops+=`<label class="op" id="op${qi}_${pos}" data-orig="${origIdx}" onclick="pick(${qi},${pos})">
+      <span class="l">${ALPHA[pos]})</span>${o.t}<div class="why">${o.why}</div></label>`;
+  });
+  div.innerHTML=`<div class="num">Questão ${qi+1}</div><div class="txt">${q.q}</div>${ops}`;
+  cont.appendChild(div);
+});
+
+function pick(qi,pos){
+  if(STATE.enviado) return;
+  STATE.resp[qi]=pos;
+  document.querySelectorAll('#q'+qi+' .op').forEach(el=>el.classList.remove('sel'));
+  document.getElementById('op'+qi+'_'+pos).classList.add('sel');
+  persist(); atualizar();
+}
+function atualizar(){
+  const n=Object.keys(STATE.resp).length;
+  document.getElementById('prog').textContent=n+" de "+QS.length+" respondidas.";
+  document.getElementById('enviar').disabled = n<QS.length || STATE.enviado;
+}
+function enviar(){
+  if(Object.keys(STATE.resp).length<QS.length) return;
+  let ac=0;
+  QS.forEach((q,qi)=>{
+    const pos=STATE.resp[qi];
+    const origIdx=STATE.ordem[qi][pos];
+    if(q.ops[origIdx].ok) ac++;
+  });
+  STATE.enviado=true; STATE.acertos=ac;
+  const rng=mulberry32(Date.now()%100000);
+  const yy=LET[Math.floor(rng()*LET.length)]+LET[Math.floor(rng()*LET.length)];
+  STATE.codigo="MED-"+String(ac).padStart(2,'0')+"-"+yy;
+  persist();
+  mostrarEnviado();
+}
+function mostrarEnviado(){
+  document.getElementById('enviar').style.display='none';
+  document.getElementById('codebox').style.display='block';
+  document.getElementById('acertos').textContent=STATE.acertos;
+  document.getElementById('codigo').textContent=STATE.codigo;
+  document.querySelectorAll('.q').forEach(el=>el.classList.add('locked'));
+  if(STATE.liberado) verGabarito(true);
+}
+function verGabarito(auto){
+  if(!auto){
+    const v=document.getElementById('codein').value.trim().toUpperCase();
+    if(v!==STATE.codigo){ document.getElementById('codemsg').textContent="Código incorreto. Confira as letras (sem I e sem O)."; return; }
+    STATE.liberado=true; persist();
+  }
+  document.getElementById('codemsg').textContent="Gabarito liberado ✓";
+  QS.forEach((q,qi)=>{
+    const chosen=STATE.resp[qi];
+    STATE.ordem[qi].forEach((origIdx,pos)=>{
+      const el=document.getElementById('op'+qi+'_'+pos);
+      if(q.ops[origIdx].ok) el.classList.add('correct');
+      else if(pos===chosen) el.classList.add('wrong');
+    });
+  });
+}
+
+/* export/import/reset */
+function doExport(){const blob=new Blob([JSON.stringify(STATE,null,2)],{type:"application/json"});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download="pericia_quiz.json";a.click();URL.revokeObjectURL(a.href);}
+function doImport(ev){const f=ev.target.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>{try{STATE=JSON.parse(rd.result);persist();location.reload();}catch(e){openModal("Arquivo inválido","Não consegui ler esse arquivo.",null);}};rd.readAsText(f);}
+let modalCb=null;
+function openModal(t,x,cb){document.getElementById('mtit').textContent=t;document.getElementById('mtxt').textContent=x;modalCb=cb;document.getElementById('mok').style.display=cb?'inline-block':'none';document.getElementById('modalbg').style.display='flex';}
+function closeModal(){document.getElementById('modalbg').style.display='none';modalCb=null;}
+document.getElementById('mok').onclick=()=>{if(modalCb)modalCb();closeModal();};
+function askReset(){openModal("Zerar o quiz?","Isto apaga suas respostas e o código. Recomeçar do zero?",()=>{try{localStorage.removeItem(KEY);}catch(e){}mem={};location.reload();});}
+
+/* restaurar */
+Object.keys(STATE.resp).forEach(qi=>{const pos=STATE.resp[qi];const el=document.getElementById('op'+qi+'_'+pos);if(el)el.classList.add('sel');});
+if(STATE.ts){const d=new Date(STATE.ts);document.getElementById('saveinfo').textContent="Salvo às "+d.toLocaleTimeString('pt-BR')+" ("+d.toLocaleDateString('pt-BR')+").";}
+atualizar();
+if(STATE.enviado) mostrarEnviado();
+persist();
+</script>
+</body>
+</html>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perícia das Palavras · 9º ano · Português</title>
+<style>
+:root{--bg:#0a1120;--panel:#111d33;--panel2:#0e1830;--ink:#e9f0fb;--muted:#93a6c4;
+--lupa:#35f0a0;--lupa-d:#12b877;--pista:#ffb020;--alerta:#ff5a76;--line:#243654;--shadow:0 10px 30px rgba(0,0,0,.45);}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(1200px 700px at 80% -10%,#12233f 0,var(--bg) 60%);color:var(--ink);font-family:"Segoe UI",system-ui,sans-serif;line-height:1.6}
+.wrap{max-width:900px;margin:0 auto;padding:20px 16px 90px}
+header.top{background:linear-gradient(120deg,#04140d,#0e6b4a 55%,#1de08f);border-radius:20px;padding:30px 26px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+header.top:before{content:"🔎";position:absolute;right:18px;top:8px;font-size:110px;opacity:.14}
+header.top h1{margin:0 0 6px;font-size:1.9rem;color:#04140d}
+header.top .sub{color:#06251a;font-weight:600;font-size:1.05rem}
+.kick{display:inline-block;background:#04140d;color:#7dffc4;font-size:.74rem;font-weight:700;letter-spacing:.12em;padding:5px 12px;border-radius:999px;margin-bottom:10px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px}
+@media(max-width:640px){.grid{grid-template-columns:1fr}}
+a.mat{display:block;text-decoration:none;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px 20px;box-shadow:var(--shadow);transition:.15s;position:relative}
+a.mat:hover{border-color:var(--lupa);transform:translateY(-2px)}
+a.mat .n{position:absolute;top:14px;right:16px;font-size:.75rem;color:var(--muted);font-weight:700}
+a.mat .ico{font-size:1.9rem}
+a.mat h3{margin:6px 0 4px;color:var(--lupa)}
+a.mat p{margin:0;font-size:.9rem;color:var(--muted)}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px 22px;margin:18px 0;box-shadow:var(--shadow)}
+.panel h2{margin:0 0 10px;font-size:1.25rem}
+.como li{margin:6px 0}
+.btn{background:#16264180;color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:9px 16px;font-size:.92rem;cursor:pointer}
+.btn:hover{border-color:var(--lupa);color:var(--lupa)}
+.btn.primary{background:linear-gradient(120deg,var(--lupa-d),var(--lupa));color:#04140d;font-weight:700;border:none}
+.rep input{background:#0a1426;border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:9px 12px;font-size:1rem;width:170px;text-transform:uppercase}
+.repbody{display:none;margin-top:16px}
+.rcard{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:10px 0}
+.rcard h4{margin:0 0 6px;color:var(--pista)}
+.rcard .big{font-size:1.5rem;font-weight:700;color:var(--lupa)}
+.rcard ul{margin:6px 0 0;padding-left:20px;color:#ffc2ce;font-size:.9rem}
+.pill{display:inline-block;font-size:.78rem;padding:3px 10px;border-radius:999px;margin-left:6px}
+.pill.ok{background:#0e2a1e;color:var(--lupa);border:1px solid var(--lupa-d)}
+.pill.rev{background:#3a2b0e;color:#ffd98a;border:1px solid var(--pista)}
+.hint{font-size:.85rem;color:var(--muted)}
+.foot{text-align:center;color:var(--muted);font-size:.82rem;margin-top:30px}
+.modal-bg{position:fixed;inset:0;background:rgba(4,8,18,.7);display:none;align-items:center;justify-content:center;z-index:50;padding:20px}
+.modal{background:var(--panel);border:1px solid var(--line);border-radius:16px;max-width:440px;padding:22px;box-shadow:var(--shadow)}
+.modal .row{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span class="kick">CCF · 9º ANO · LÍNGUA PORTUGUESA · MENSAL 2</span>
+    <h1>🔎 Perícia das Palavras</h1>
+    <div class="sub">Citação · Funções do “que” · Funções do “se”</div>
+  </header>
+
+  <div class="grid">
+    <a class="mat" href="leitura-guiada.html"><span class="n">1º</span><div class="ico">📖</div>
+      <h3>Leitura Guiada</h3><p>8 casos com texto e perguntas para você escrever — é onde tudo se aprende.</p></a>
+    <a class="mat" href="quiz.html"><span class="n">2º</span><div class="ico">🎯</div>
+      <h3>Quiz</h3><p>18 casos objetivos para testar na hora o que entendeu. Código MED.</p></a>
+    <a class="mat" href="resumo.html"><span class="n">3º</span><div class="ico">🗺️</div>
+      <h3>Resumo</h3><p>Fichas, tabelas e pegadinhas para fechar as lacunas do quiz.</p></a>
+    <a class="mat" href="simulado.html"><span class="n">4º</span><div class="ico">📝</div>
+      <h3>Simulado</h3><p>28 questões estilo vestibular (somatório + romanos). Código SIM.</p></a>
+  </div>
+
+  <div class="panel">
+    <h2>🧭 Como usar este material</h2>
+    <ol class="como">
+      <li><b>📖 Leitura Guiada</b> primeiro: leia cada caso e responda escrevendo com as suas palavras.</li>
+      <li><b>🎯 Quiz</b>: teste na hora o que aprendeu e descubra onde ainda tem dúvida.</li>
+      <li><b>🗺️ Resumo</b>: use as fichas para fechar exatamente as dúvidas que o quiz mostrou.</li>
+      <li><b>📝 Simulado</b>: encare a prova de treino, no estilo do 9º ano.</li>
+    </ol>
+    <p class="hint">Tudo salva sozinho neste aparelho. Sem relógio: estude no seu ritmo.</p>
+  </div>
+
+  <div class="panel rep">
+    <h2>📊 Relatório para os pais</h2>
+    <p class="hint">Digite um dos códigos do estudante (MED do quiz ou SIM do simulado) ou o código fixo da família <b>PAIS-77</b>.</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+      <input id="repcode" placeholder="PAIS-77" maxlength="9">
+      <button class="btn primary" onclick="abrirRelatorio()">Abrir relatório</button>
+      <span class="hint" id="repmsg"></span>
+    </div>
+    <div class="repbody" id="repbody">
+      <div class="rcard" id="r_lg"></div>
+      <div class="rcard" id="r_quiz"></div>
+      <div class="rcard" id="r_resumo"></div>
+      <div class="rcard" id="r_sim"></div>
+      <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn" onclick="exportAll()">📥 Exportar tudo (.json)</button>
+        <button class="btn" onclick="askReset()">🗑️ Zerar todo o kit</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">Perícia das Palavras · estudo do jovem aprendiz · Colégio Coração Feliz · 9º ano</div>
+</div>
+
+<div class="modal-bg" id="modalbg"><div class="modal"><h3 id="mtit"></h3><p id="mtxt" style="color:var(--muted)"></p>
+  <div class="row"><button class="btn" onclick="closeModal()">Cancelar</button><button class="btn primary" id="mok">OK</button></div></div></div>
+
+<script>
+function rd(k){try{const r=localStorage.getItem(k);return r?JSON.parse(r):null;}catch(e){return null;}}
+
+function codesValidos(){
+  const arr=["PAIS-77"];
+  const q=rd("pericia_quiz"); if(q&&q.codigo)arr.push(q.codigo);
+  const s=rd("pericia_sim"); if(s&&s.codigo)arr.push(s.codigo);
+  return arr;
+}
+function abrirRelatorio(){
+  const v=document.getElementById('repcode').value.trim().toUpperCase();
+  if(!codesValidos().includes(v)){document.getElementById('repmsg').textContent="Código não reconhecido. Use PAIS-77 ou o código MED/SIM do estudante.";return;}
+  document.getElementById('repmsg').textContent="";
+  montar(); document.getElementById('repbody').style.display='block';
+}
+
+function montar(){
+  /* Leitura Guiada */
+  const lg=rd("pericia_lg");let h="<h4>📖 Leitura Guiada</h4>";
+  if(lg&&lg.blocos){
+    let done=0,vermelhas=0,naos=0,revlist=[];const total=8;
+    Object.keys(lg.blocos).forEach(bi=>{const b=lg.blocos[bi];if(b.done)done++;
+      Object.keys(b.perg||{}).forEach(pi=>{const p=b.perg[pi];
+        if(p.transcrita){vermelhas++;revlist.push("Caso "+(+bi+1)+", pergunta "+(+pi+1)+": resposta muito parecida com o texto");}
+        if(p.chk){p.chk.forEach(v=>{if(v===0)naos++;});}
+      });
+    });
+    h+="<div class='big'>"+done+" / "+total+"</div><div class='hint'>casos concluídos</div>";
+    h+="<p>Respostas marcadas em vermelho (copiadas do texto): <b>"+vermelhas+"</b><br>Pontos de autoavaliação com “não”: <b>"+naos+"</b></p>";
+    if(revlist.length){h+="<b>Para revisar:</b><ul>"+revlist.map(x=>"<li>"+x+"</li>").join("")+"</ul>";}
+    else if(done>0){h+="<span class='pill ok'>tudo em ordem</span>";}
+  } else { h+="<p class='hint'>Ainda não iniciada.</p>"; }
+  document.getElementById('r_lg').innerHTML=h;
+
+  /* Quiz */
+  const q=rd("pericia_quiz");h="<h4>🎯 Quiz</h4>";
+  if(q&&q.enviado){h+="<div class='big'>"+q.acertos+" / 18</div><div class='hint'>acertos · código "+(q.codigo||"")+"</div>";}
+  else{h+="<p class='hint'>Ainda não enviado.</p>";}
+  document.getElementById('r_quiz').innerHTML=h;
+
+  /* Resumo */
+  const r=rd("pericia_resumo");h="<h4>🗺️ Resumo</h4>";
+  if(r){h+="<div class='big'>"+(r.rolagem||0)+"%</div><div class='hint'>do resumo já lido (rolagem máxima)</div>";}
+  else{h+="<p class='hint'>Ainda não aberto.</p>";}
+  document.getElementById('r_resumo').innerHTML=h;
+
+  /* Simulado */
+  const s=rd("pericia_sim");h="<h4>📝 Simulado</h4>";
+  if(s&&s.enviado){h+="<div class='big'>"+s.acertos+" / 28</div><div class='hint'>acertos · código "+(s.codigo||"")+"</div>";}
+  else{h+="<p class='hint'>Ainda não enviado.</p>";}
+  document.getElementById('r_sim').innerHTML=h;
+}
+
+function exportAll(){
+  const all={leitura_guiada:rd("pericia_lg"),quiz:rd("pericia_quiz"),resumo:rd("pericia_resumo"),simulado:rd("pericia_sim"),gerado:new Date().toISOString()};
+  const blob=new Blob([JSON.stringify(all,null,2)],{type:"application/json"});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download="pericia_relatorio_completo.json";a.click();URL.revokeObjectURL(a.href);
+}
+let modalCb=null;
+function openModal(t,x,cb){document.getElementById('mtit').textContent=t;document.getElementById('mtxt').textContent=x;modalCb=cb;document.getElementById('mok').style.display=cb?'inline-block':'none';document.getElementById('modalbg').style.display='flex';}
+function closeModal(){document.getElementById('modalbg').style.display='none';modalCb=null;}
+document.getElementById('mok').onclick=()=>{if(modalCb)modalCb();closeModal();};
+function askReset(){openModal("Zerar todo o kit?","Isto apaga o progresso da Leitura Guiada, do Quiz, do Resumo e do Simulado. Tem certeza?",()=>{
+  ["pericia_lg","pericia_quiz","pericia_resumo","pericia_sim"].forEach(k=>{try{localStorage.removeItem(k);}catch(e){}});
+  montar();openModal("Pronto","Todo o progresso foi apagado.",null);});}
+</script>
+</body>
+</html>

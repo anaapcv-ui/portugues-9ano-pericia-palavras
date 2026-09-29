@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perícia das Palavras · Leitura Guiada</title>
+<style>
+:root{
+  --bg:#0a1120; --panel:#111d33; --panel2:#0e1830; --ink:#e9f0fb; --muted:#93a6c4;
+  --lupa:#35f0a0; --lupa-d:#12b877; --pista:#ffb020; --alerta:#ff5a76; --line:#243654;
+  --shadow:0 10px 30px rgba(0,0,0,.45);
+}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(1200px 700px at 80% -10%,#12233f 0,var(--bg) 60%);
+  color:var(--ink);font-family:"Segoe UI",system-ui,-apple-system,sans-serif;line-height:1.6}
+.wrap{max-width:900px;margin:0 auto;padding:20px 16px 80px}
+header.top{background:linear-gradient(120deg,#0c6b4a,#12b877 60%,#1de08f);
+  border-radius:18px;padding:22px 24px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+header.top:before{content:"🔎";position:absolute;right:14px;top:-6px;font-size:80px;opacity:.18}
+header.top h1{margin:0 0 4px;font-size:1.55rem;color:#04140d}
+header.top .sub{color:#06251a;font-weight:600}
+.kick{display:inline-block;background:#04140d;color:#7dffc4;font-size:.72rem;font-weight:700;
+  letter-spacing:.12em;padding:4px 10px;border-radius:999px;margin-bottom:8px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px 20px;margin:16px 0;box-shadow:var(--shadow)}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+.btn{background:#16264180;color:var(--ink);border:1px solid var(--line);border-radius:10px;
+  padding:8px 14px;font-size:.9rem;cursor:pointer;transition:.15s}
+.btn:hover{border-color:var(--lupa);color:var(--lupa)}
+.btn.primary{background:linear-gradient(120deg,var(--lupa-d),var(--lupa));color:#04140d;font-weight:700;border:none}
+.btn.primary:disabled{opacity:.4;cursor:not-allowed;filter:grayscale(.4)}
+.progress{height:10px;background:#0c1730;border-radius:999px;overflow:hidden;border:1px solid var(--line);margin-top:8px}
+.progress>i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--lupa),var(--pista));transition:.4s}
+.saveinfo{font-size:.78rem;color:var(--muted)}
+.block{position:relative;margin:18px 0;border-radius:16px;border:1px solid var(--line);background:var(--panel);box-shadow:var(--shadow);overflow:hidden}
+.block .head{padding:16px 20px;background:linear-gradient(120deg,#0e2a45,#123a2e);display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.badge{background:#04140d;color:var(--lupa);border:1px solid var(--lupa-d);font-size:.72rem;font-weight:700;
+  border-radius:999px;padding:3px 10px;letter-spacing:.06em}
+.block .head h2{margin:0;font-size:1.15rem}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:2px}
+.tags span{font-size:.68rem;background:#0c1730;color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:2px 7px}
+.body{padding:18px 20px}
+.body p{margin:0 0 12px}
+.ex{background:#0c1730;border-left:3px solid var(--lupa);border-radius:8px;padding:10px 14px;margin:12px 0;font-size:.95rem}
+.ex b{color:var(--lupa)}
+.dica{background:#2a210a;border-left:3px solid var(--pista);border-radius:8px;padding:10px 14px;margin:12px 0;font-size:.92rem;color:#ffe6ad}
+.q{margin:16px 0;padding:14px 16px;background:var(--panel2);border:1px solid var(--line);border-radius:12px}
+.q.red{border-color:var(--alerta);box-shadow:0 0 0 1px var(--alerta) inset}
+.q .qn{font-weight:700;color:var(--lupa)}
+.q .qtype{font-size:.66rem;font-weight:700;letter-spacing:.08em;padding:2px 8px;border-radius:6px;margin-left:8px;vertical-align:middle}
+.qtype.ap{background:#0e3a2a;color:#7dffc4;border:1px solid var(--lupa-d)}
+.qtype.co{background:#3a2b0e;color:#ffd98a;border:1px solid var(--pista)}
+textarea{width:100%;margin-top:8px;min-height:74px;background:#0a1426;color:var(--ink);border:1px solid var(--line);
+  border-radius:10px;padding:10px 12px;font-family:inherit;font-size:.95rem;resize:vertical}
+textarea:focus{outline:none;border-color:var(--lupa)}
+.warn{margin-top:8px;background:#3a2b0e;border:1px solid var(--pista);color:#ffe6ad;border-radius:10px;padding:10px 12px;font-size:.9rem;display:none}
+.redflag{margin-top:8px;background:#3a0e18;border:1px solid var(--alerta);color:#ffc2ce;border-radius:10px;padding:10px 12px;font-size:.9rem;display:none}
+.modelo{margin-top:10px;background:#0e2a1e;border:1px solid var(--lupa-d);border-radius:10px;padding:10px 14px;display:none}
+.modelo .lab{font-size:.72rem;font-weight:700;letter-spacing:.08em;color:var(--lupa)}
+.chk{margin-top:10px;display:none}
+.chk .item{display:flex;gap:8px;align-items:center;justify-content:space-between;padding:7px 0;border-top:1px dashed var(--line);flex-wrap:wrap}
+.chk .item:first-child{border-top:none}
+.chk .q2{font-size:.9rem;flex:1;min-width:180px}
+.chk .opts{display:flex;gap:6px}
+.chk .opts button{border:1px solid var(--line);background:#0c1730;color:var(--muted);border-radius:8px;padding:5px 12px;cursor:pointer;font-size:.82rem}
+.chk .opts button.sim.on{background:var(--lupa-d);color:#04140d;border-color:var(--lupa);font-weight:700}
+.chk .opts button.nao.on{background:var(--alerta);color:#2a0009;border-color:var(--alerta);font-weight:700}
+.bstatus{margin-top:12px;font-weight:700;display:none}
+.bstatus.ok{color:var(--lupa)} .bstatus.rev{color:var(--pista)}
+.locked{filter:blur(3px);pointer-events:none;user-select:none}
+.lockmsg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(8,14,28,.72);z-index:2;font-weight:700;color:var(--muted);text-align:center;padding:20px}
+.final{background:linear-gradient(120deg,#3a0e18,#2a0a12);border:1px solid var(--alerta)}
+.final h2{color:#ff9db0}
+.peg{margin:8px 0;padding-left:22px}
+.peg li{margin:6px 0}
+table.cov{width:100%;border-collapse:collapse;margin-top:10px;font-size:.9rem}
+table.cov th,table.cov td{border:1px solid var(--line);padding:8px 10px;text-align:left}
+table.cov th{background:#0c1730;color:var(--lupa)}
+.revlist{background:#0c1730;border:1px solid var(--pista);border-radius:12px;padding:14px 18px;margin-top:14px}
+.revlist h3{margin:0 0 8px;color:var(--pista)}
+.revlist ul{margin:0;padding-left:20px}
+.modal-bg{position:fixed;inset:0;background:rgba(4,8,18,.7);display:none;align-items:center;justify-content:center;z-index:50;padding:20px}
+.modal{background:var(--panel);border:1px solid var(--line);border-radius:16px;max-width:440px;padding:22px;box-shadow:var(--shadow)}
+.modal h3{margin:0 0 8px}
+.modal .row{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
+.nav{display:flex;justify-content:space-between;margin-top:22px;flex-wrap:wrap;gap:10px}
+a.next{display:inline-block;background:linear-gradient(120deg,var(--lupa-d),var(--lupa));color:#04140d;font-weight:700;
+  text-decoration:none;padding:11px 18px;border-radius:12px}
+.foot{text-align:center;color:var(--muted);font-size:.8rem;margin-top:30px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span class="kick">PERÍCIA DAS PALAVRAS · CASO 01</span>
+    <h1>📖 Leitura Guiada — Sala de Perícia</h1>
+    <div class="sub">Citação · Funções do “que” · Funções do “se” — 9º ano</div>
+  </header>
+
+  <div class="panel">
+    <div class="bar">
+      <div>
+        <strong>Painel do perito</strong>
+        <div class="saveinfo" id="saveinfo">Seu progresso salva sozinho neste aparelho.</div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn" onclick="doExport()">📥 Exportar</button>
+        <button class="btn" onclick="document.getElementById('imp').click()">📤 Importar</button>
+        <button class="btn" onclick="askReset()">🗑️ Zerar tudo</button>
+        <input type="file" id="imp" accept="application/json" style="display:none" onchange="doImport(event)">
+      </div>
+    </div>
+    <div class="progress"><i id="pbar"></i></div>
+    <div class="saveinfo" id="ptxt" style="margin-top:6px">0 de 8 casos concluídos.</div>
+  </div>
+
+  <p class="panel" style="background:#0c1730">
+    <strong>Como funciona:</strong> você é o <b style="color:var(--lupa)">perito</b>. Em cada caso,
+    leia o laudo e responda as <b>3 perguntas escrevendo com as suas palavras</b> na caixinha.
+    O botão <b>Conferir</b> só libera quando as três estiverem preenchidas. Se a resposta ficar
+    igual ao texto, o sistema pede para você reescrever do seu jeito — porque é escrever que fixa.
+    Depois de conferir, marque a autoavaliação. O próximo caso abre quando você fecha o atual.
+  </p>
+
+  <div id="blocks"></div>
+
+  <div class="block final" id="finalbox">
+    <div class="head" style="background:linear-gradient(120deg,#3a0e18,#123a2e)">
+      <span class="badge" style="color:#ff9db0;border-color:var(--alerta)">DOSSIÊ FINAL</span>
+      <h2>⚠️ Pegadinhas & Mapa dos Casos</h2>
+    </div>
+    <div class="body">
+      <h3 style="color:#ff9db0">10 pegadinhas que derrubam na prova</h3>
+      <ol class="peg">
+        <li>Nem todo <b>“que”</b> é pronome relativo: se <b>não há antecedente</b> e ele completa um verbo, é <b>conjunção integrante</b>.</li>
+        <li>Só o pronome relativo aceita a troca por <b>“o qual / a qual”</b>. Não coube? Então não é relativo.</li>
+        <li>Em <b>“tão… que”</b> / <b>“tanto… que”</b>, o “que” é <b>conjunção (consecutiva)</b>, indica <b>consequência</b> — não é pronome.</li>
+        <li>“Que” com sentido de <b>e</b>, <b>mas</b> ou <b>pois</b> é <b>conjunção coordenativa</b> (aditiva, adversativa, explicativa).</li>
+        <li>O <b>“se”</b> nem sempre é condição: depois de <b>saber, perguntar, duvidar</b> costuma ser <b>conjunção integrante</b> (troca por “isso”).</li>
+        <li><b>“Vende-se casa”</b> (singular) × <b>“Vendem-se casas”</b> (plural): com verbo transitivo direto é <b>partícula apassivadora</b> e o verbo <b>concorda com o sujeito</b>.</li>
+        <li><b>“Precisa-se de…”</b> fica no <b>singular</b>: é <b>índice de indeterminação do sujeito</b> (verbo transitivo indireto).</li>
+        <li>Verbo pronominal (<b>arrepender-se, queixar-se, orgulhar-se</b>): o “se” é <b>parte do verbo</b> — não é reflexivo nem realce.</li>
+        <li><b>Reflexivo</b> (a si mesmo) × <b>recíproco</b> (um ao outro): “abraçaram-se” pode ser os dois — quem decide é o <b>contexto</b>.</li>
+        <li>Citação só ajuda quando <b>combina com o tema</b> e traz a <b>fonte certa</b>; citação solta ou trocada <b>empobrece</b> o texto.</li>
+      </ol>
+
+      <h3 style="color:#7dffc4;margin-top:22px">🗺️ Tópico → Caso (cobertura do escopo)</h3>
+      <table class="cov">
+        <tr><th>Tópico do escopo</th><th>Caso</th></tr>
+        <tr><td>Citação: o que é, para que serve, fonte, uso de dados</td><td>Caso 1</td></tr>
+        <tr><td>“que” pronome relativo (antecedente + oração adjetiva)</td><td>Casos 2 e 5</td></tr>
+        <tr><td>“que” conjunção integrante (oração substantiva)</td><td>Casos 3 e 5</td></tr>
+        <tr><td>“que” conjunção adverbial e coordenativa (e outros usos)</td><td>Caso 4</td></tr>
+        <tr><td>Diferenciar pronome relativo × conjunção integrante</td><td>Caso 5</td></tr>
+        <tr><td>“se” conjunção integrante e conjunção condicional</td><td>Caso 6</td></tr>
+        <tr><td>“se” reflexivo/recíproco, apassivadora e indeterminação do sujeito</td><td>Caso 7</td></tr>
+        <tr><td>“se” partícula integrante do verbo e partícula de realce</td><td>Caso 8</td></tr>
+      </table>
+
+      <div class="revlist" id="revlist" style="display:none">
+        <h3>📌 Para revisar (o que ficou vermelho ou com “não”)</h3>
+        <ul id="revitems"></ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav">
+    <span></span>
+    <a class="next" href="quiz.html">Próximo material: 🎯 Quiz →</a>
+  </div>
+  <div class="foot">Perícia das Palavras · Estudo do jovem aprendiz · sem relógio, no seu ritmo.</div>
+</div>
+
+<div class="modal-bg" id="modalbg">
+  <div class="modal">
+    <h3 id="mtit">Confirmar</h3>
+    <p id="mtxt" style="color:var(--muted)"></p>
+    <div class="row">
+      <button class="btn" onclick="closeModal()">Cancelar</button>
+      <button class="btn primary" id="mok">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ---------------- CONTEÚDO DOS 8 CASOS ---------------- */
+const BLOCOS = [
+{
+  badge:"CASO 1 · SALA DAS CITAÇÕES", titulo:"O que é uma citação",
+  tags:["Citação","Fonte","Credibilidade"],
+  texto:[
+    "Fazer uma <b>citação</b> é trazer para dentro do seu texto a <b>fala, a ideia ou os dados de outra fonte</b> — um autor, um especialista, uma pesquisa. É como um perito que, para provar uma tese, mostra o depoimento de uma testemunha confiável. A citação <b>enriquece</b> o texto e dá <b>credibilidade</b> ao argumento: em vez de o autor dizer “confie em mim”, ele mostra que alguém reconhecido pensa igual.",
+    "Para valer, a fonte precisa ser <b>citada corretamente</b> (autor e obra), para que o leitor possa <b>conferir</b>. Uma citação pode aparecer em <b>discurso direto</b> (a fala literal, entre aspas) ou em <b>discurso indireto</b> (a ideia contada com as palavras do próprio autor). Números, índices e estatísticas de um órgão confiável também funcionam como citação: aproximam o texto da realidade.",
+    "Há um cuidado importante: a citação tem que <b>combinar com o tema</b>. Se ela aparece solta, fora de contexto, ou é atribuída à pessoa errada, o efeito se inverte — em vez de fortalecer, <b>empobrece</b> o texto e confunde o leitor. Citar bem é escolher a fonte certa, no lugar certo, com o crédito certo."
+  ],
+  perguntas:[
+    {tipo:"co", q:"Com as suas palavras, explique o que é uma citação e por que ela dá mais força a um texto.",
+     modelo:"Citação é trazer a fala, a ideia ou os dados de outra fonte (autor, especialista, pesquisa) para dentro do texto. Dá mais força porque mostra que uma fonte confiável apoia o argumento, aumentando a credibilidade.",
+     chk:["Eu disse que citação é trazer a fala/ideia/dados de OUTRA fonte?","Eu disse que ela serve para dar credibilidade/autoridade ao argumento?"]},
+    {tipo:"ap", q:"Escreva uma frase SUA defendendo a paz e insira nela uma citação (pode ser um provérbio ou a fala de uma autoridade inventada), mostrando de quem é.",
+     modelo:"Exemplo: “A paz começa em casa”, já dizia minha avó — e é por isso que respeitar quem pensa diferente é o primeiro passo contra qualquer guerra.",
+     chk:["Minha frase tem uma citação (aspas ou a fala de alguém)?","Eu indiquei DE QUEM é a citação (a fonte)?"]},
+    {tipo:"ap", q:"Imagine um texto sobre meio ambiente que traz, do nada, uma citação sobre futebol. Explique por que ela ficaria incoerente e o que o autor deveria fazer.",
+     modelo:"Ficaria incoerente porque a citação não tem relação com o tema (meio ambiente), então não ajuda o argumento e confunde o leitor. O autor deveria trocá-la por uma citação que combine com o assunto, de uma fonte confiável.",
+     chk:["Eu expliquei que a citação precisa ter RELAÇÃO com o tema?","Eu disse que o autor deve trocá-la por uma que combine com o assunto?"]}
+  ]
+},
+{
+  badge:"CASO 2 · LAUDO DO “QUE”", titulo:"“que” como pronome relativo",
+  tags:["que","Pronome relativo","Oração adjetiva"],
+  texto:[
+    "Quando o <b>“que”</b> é <b>pronome relativo</b>, ele faz duas coisas ao mesmo tempo: <b>retoma um antecedente</b> (um nome que já foi dito antes) e <b>introduz uma oração subordinada adjetiva</b>, que caracteriza esse nome — como se fosse um adjetivo esticado numa frase inteira.",
+    "O truque de perito mais seguro é a <b>substituição por “o qual / a qual”</b>. Se couber, é pronome relativo.",
+    "Observe o antecedente logo antes do “que”: é ele que o pronome relativo está “apontando”."
+  ],
+  perguntas:[
+    {tipo:"co", q:"Explique, com as suas palavras, o que é o “antecedente” e como ele ajuda a reconhecer o pronome relativo.",
+     modelo:"Antecedente é o nome (substantivo) que vem ANTES do “que” e que ele retoma. Se existe esse nome antes e o “que” o caracteriza, é sinal de pronome relativo.",
+     chk:["Eu disse que o antecedente é o NOME que vem antes do “que”?","Eu liguei o antecedente à ideia de que o “que” o retoma/caracteriza?"]},
+    {tipo:"ap", q:"Crie uma frase SUA com “que” pronome relativo e escreva o antecedente entre colchetes. Ex.: [O tratado] que foi assinado…",
+     modelo:"Exemplo: [Os países] que assinaram o acordo enviaram representantes à assembleia. Antecedente = os países.",
+     chk:["Minha frase tem um “que” que retoma um nome anterior?","Eu marquei entre colchetes o antecedente (o nome retomado)?"]},
+    {tipo:"ap", q:"Na frase “O livro que comprei ontem sumiu”, troque o “que” por “o qual” e diga se continua fazendo sentido. O que isso prova?",
+     modelo:"“O livro o qual comprei ontem sumiu” continua com sentido. Isso prova que o “que” é pronome relativo (tem antecedente “o livro” e aceita a troca por “o qual”).",
+     chk:["Eu fiz a troca por “o qual” e vi que a frase continua com sentido?","Eu concluí que isso prova que o “que” é pronome relativo?"]}
+  ]
+},
+{
+  badge:"CASO 3 · LAUDO DO “QUE”", titulo:"“que” como conjunção integrante",
+  tags:["que","Conjunção integrante","Oração substantiva"],
+  texto:[
+    "O <b>“que” conjunção integrante</b> não retoma nada: ele <b>não tem antecedente</b>. A função dele é <b>introduzir uma oração subordinada substantiva</b>, que <b>completa o sentido</b> de um verbo ou de um nome. Sem essa oração, a frase fica “pela metade”.",
+    "Como não há antecedente, <b>não cabe</b> a troca por “o qual”. Em compensação, a oração inteira do “que” pode ser trocada por <b>“isso”</b> — esse é o teste do perito.",
+    "Ele costuma aparecer depois de verbos como <b>achar, esperar, saber, afirmar, dizer, perguntar</b>."
+  ],
+  perguntas:[
+    {tipo:"ap", q:"Crie uma frase SUA com “que” conjunção integrante depois de um verbo como “acho”, “espero” ou “sei”.",
+     modelo:"Exemplo: Espero que os líderes cumpram o acordo de paz. (a oração “que os líderes cumpram o acordo” completa o verbo “espero”).",
+     chk:["Minha frase usa “que” depois de um verbo como achar/esperar/saber?","O trecho do “que” completa o sentido do verbo (dá para trocar por “isso”)?"]},
+    {tipo:"ap", q:"Nas frases “O país que venceu comemorou” e “Sei que o país venceu”, diga em qual o “que” é pronome relativo e em qual é conjunção integrante — e como você decidiu.",
+     modelo:"Na 1ª (“O país que venceu”) é pronome relativo: tem antecedente “o país” e cabe “o qual”. Na 2ª (“Sei que o país venceu”) é conjunção integrante: não tem antecedente, completa o verbo “sei” e a oração troca por “isso”.",
+     chk:["Eu apontei a 1ª como relativo (tem antecedente) e a 2ª como integrante?","Eu expliquei o critério (antecedente / “o qual” × completa o verbo / “isso”)?"]},
+    {tipo:"co", q:"Por que NÃO cabe a troca por “o qual” quando o “que” é conjunção integrante? Explique.",
+     modelo:"Porque “o qual” só substitui um pronome que retoma um antecedente. A conjunção integrante não tem antecedente — ela liga uma oração que completa o verbo, então não há nome para “o qual” retomar.",
+     chk:["Eu disse que “o qual” só serve quando há antecedente?","Eu disse que a integrante não tem antecedente, por isso a troca não funciona?"]}
+  ]
+},
+{
+  badge:"CASO 4 · LAUDO DO “QUE”", titulo:"“que” conjunção adverbial, coordenativa e outros disfarces",
+  tags:["que","Consecutiva","Coordenativa"],
+  texto:[
+    "O “que” tem ainda outros disfarces. Como <b>conjunção subordinativa adverbial</b>, ele liga uma oração que mostra uma <b>circunstância</b>. O caso mais cobrado é a <b>consecutiva</b>, com “tão… que” ou “tanto… que”, indicando <b>consequência</b>: “Ficou tão surpreso <b>que</b> derrubou o prato.” Pode também indicar <b>causa</b> (“Dormimos a tarde toda, <b>que</b> ninguém é de ferro”), <b>finalidade</b> (“para <b>que</b> se inscrevesse”), <b>comparação</b> (“mais tímido <b>que</b> o irmão”) e <b>tempo</b> (“agora <b>que</b> você falou”).",
+    "Como <b>conjunção coordenativa</b>, o “que” liga orações independentes e pode ter o sentido de <b>“e”</b> (aditiva), <b>“mas”</b> (adversativa) ou <b>“pois”</b> (explicativa): “Mantenha a fé, <b>que</b> o amanhã promete” = “…, <b>pois</b> o amanhã promete”.",
+    "Há ainda usos menores: <b>advérbio de intensidade</b> (“<b>Que</b> lindo!” = quão), <b>substantivo</b> (“um <b>quê</b> de mistério”) e <b>palavra de realce</b>. O importante, mais do que decorar rótulos, é <b>perceber o sentido</b> que o “que” cria entre as orações."
+  ],
+  perguntas:[
+    {tipo:"ap", q:"Escreva uma frase SUA com “tão … que” mostrando consequência e escreva entre colchetes a parte que mostra o resultado.",
+     modelo:"Exemplo: A cidade cresceu tão rápido [que já tem cinco favelas]. A parte entre colchetes é a consequência.",
+     chk:["Minha frase usa “tão … que” (ou “tanto … que”)?","A parte marcada mostra a CONSEQUÊNCIA (o resultado)?"]},
+    {tipo:"ap", q:"Na frase “Mantenha a fé, que o amanhã promete”, o “que” pode ser trocado por qual palavra: e, mas ou pois? Reescreva a frase com ela.",
+     modelo:"Pode ser trocado por “pois” (sentido explicativo): “Mantenha a fé, pois o amanhã promete.” O “que” aqui é conjunção coordenativa explicativa.",
+     chk:["Eu escolhi “pois” (explicativa)?","Eu reescrevi a frase trocando o “que” por “pois”?"]},
+    {tipo:"ap", q:"Escreva uma frase SUA em que “Que” seja advérbio de intensidade (tipo “Que lindo!”) e explique por que não é pronome nem conjunção.",
+     modelo:"Exemplo: Que bonito ficou o mural da paz! Aqui “Que” intensifica o adjetivo (equivale a “quão”), não retoma nome nem liga orações — por isso é advérbio de intensidade.",
+     chk:["Minha frase usa “Que” intensificando um adjetivo/advérbio (= quão)?","Eu expliquei que ele não retoma nome nem liga duas orações?"]}
+  ]
+},
+{
+  badge:"CASO 5 · PERÍCIA COMPARADA", titulo:"Pronome relativo × conjunção integrante",
+  tags:["que","Comparação","Teste decisivo"],
+  texto:[
+    "Este é o caso que mais confunde — e o que mais cai. Ponha os dois lado a lado. <b>Pronome relativo</b>: tem <b>antecedente</b> (nome antes), cabe <b>“o qual”</b>, introduz oração <b>adjetiva</b> (caracteriza o nome). <b>Conjunção integrante</b>: <b>sem antecedente</b>, <b>completa</b> um verbo ou nome, introduz oração <b>substantiva</b>, a oração troca por <b>“isso”</b>.",
+    "Veja os dois juntos numa frase real: “As pessoas <b>que</b> acham <b>que</b> não cabe a elas se envolver…”. O <b>primeiro “que”</b> é <b>relativo</b> (antecedente = “as pessoas”). O <b>segundo “que”</b> é <b>integrante</b> (completa o verbo “acham”; troca por “isso”: “acham isso”).",
+    "Ordem de perícia: (1) tem um nome logo antes que o “que” retoma? (2) cabe “o qual”? Se sim, <b>relativo</b>. Se não, tente trocar a oração por “isso” depois de um verbo — se couber, <b>integrante</b>."
+  ],
+  perguntas:[
+    {tipo:"ap", q:"Na frase “Espero que os líderes que assinaram o acordo cumpram a promessa”, classifique CADA “que”.",
+     modelo:"1º “que” (Espero que…) = conjunção integrante (completa “espero”, sem antecedente, troca por “isso”). 2º “que” (líderes que assinaram) = pronome relativo (antecedente “os líderes”, cabe “os quais”).",
+     chk:["Eu classifiquei o 1º “que” como conjunção integrante?","Eu classifiquei o 2º “que” como pronome relativo (antecedente “líderes”)?"]},
+    {tipo:"ap", q:"Em “Sei que a guerra acabou”, troque a oração do “que” por “isso”. Funcionou? O que isso indica?",
+     modelo:"“Sei isso.” Funcionou — a oração completa o verbo “sei”. Isso indica que o “que” é conjunção integrante (introduz oração substantiva).",
+     chk:["Eu troquei por “isso” e vi que funcionou?","Eu concluí que o “que” é conjunção integrante?"]},
+    {tipo:"ap", q:"Crie uma frase SUA que tenha os DOIS: um “que” pronome relativo e um “que” conjunção integrante.",
+     modelo:"Exemplo: Sei que o país que venceu a guerra quer a paz. (1º “que” = integrante, completa “sei”; 2º “que” = relativo, antecedente “o país”).",
+     chk:["Minha frase tem um “que” que retoma um nome (relativo)?","Minha frase tem um “que” que completa um verbo (integrante)?"]}
+  ]
+},
+{
+  badge:"CASO 6 · LAUDO DO “SE”", titulo:"“se” conjunção integrante e conjunção condicional",
+  tags:["se","Integrante","Condicional"],
+  texto:[
+    "O “se” também troca de identidade. Como <b>conjunção integrante</b>, ele <b>introduz uma oração subordinada substantiva</b> que completa o verbo — quase sempre depois de <b>saber, perguntar, duvidar, ignorar</b>: “O presidente perguntou <b>se</b> todos assinariam o acordo.” Teste: a oração troca por <b>“isso”</b> (“perguntou isso”).",
+    "Como <b>conjunção subordinativa adverbial condicional</b>, o “se” <b>abre uma condição</b> — diz sob qual circunstância algo acontece: “<b>Se</b> todos colaborarem, poderemos viver em paz.” Aqui cabe a lógica <b>se… então</b>.",
+    "Cuidado com a pegadinha: nem todo “se” no começo da frase é condição. Depois de um verbo de “saber/perguntar”, ele costuma ser <b>integrante</b>, não condicional."
+  ],
+  perguntas:[
+    {tipo:"ap", q:"Escreva uma frase SUA com “se” conjunção integrante depois do verbo “perguntar” ou “saber”.",
+     modelo:"Exemplo: Ninguém sabe se a guerra vai acabar logo. (a oração “se a guerra vai acabar logo” completa o verbo “sabe”; troca por “isso”).",
+     chk:["Minha frase usa “se” depois de saber/perguntar?","O trecho do “se” completa o verbo (dá para trocar por “isso”)?"]},
+    {tipo:"ap", q:"Escreva uma frase SUA com “se” condicional e diga qual é a condição.",
+     modelo:"Exemplo: Se as nações conversarem, a paz é possível. A condição é “as nações conversarem”.",
+     chk:["Minha frase abre uma condição com “se” (lógica se… então)?","Eu disse qual é a condição?"]},
+    {tipo:"co", q:"Explique, com as suas palavras, a diferença de sentido entre o “se” integrante e o “se” condicional.",
+     modelo:"O “se” integrante liga uma oração que COMPLETA o verbo (o que se sabe/pergunta) e troca por “isso”. O “se” condicional apresenta uma CONDIÇÃO para algo acontecer (se… então).",
+     chk:["Eu disse que o integrante completa o verbo (troca por “isso”)?","Eu disse que o condicional apresenta uma condição (se… então)?"]}
+  ]
+},
+{
+  badge:"CASO 7 · LAUDO DO “SE”", titulo:"“se” pronome e partículas (apassivadora e indeterminação)",
+  tags:["se","Reflexivo/recíproco","Apassivadora","Indeterminação"],
+  texto:[
+    "Como <b>pronome</b>, o “se” pode ser <b>reflexivo</b> — a ação é praticada e recebida pelo <b>próprio sujeito</b> (“O refugiado olhou-<b>se</b> no espelho” = a si mesmo) — ou <b>recíproco</b>, quando há troca <b>um ao outro</b> (“Os países enganaram-<b>se</b> nas negociações”).",
+    "Como <b>partícula apassivadora</b> (pronome apassivador), o “se” sinaliza <b>voz passiva sintética</b> e só aparece com <b>verbo transitivo direto</b>. O objeto vira sujeito, e o <b>verbo concorda</b> com ele: “Vende<b>m</b>-se casa<b>s</b>” = “casas são vendidas”; “Vende-se casa” (uma casa só).",
+    "Como <b>índice de indeterminação do sujeito</b>, o “se” aparece com <b>verbo transitivo indireto, intransitivo ou de ligação</b>, e o <b>verbo fica no singular</b>, porque não há sujeito definido: “Precisa-se <b>de</b> voluntários”, “Vive-se bem aqui”."
+  ],
+  perguntas:[
+    {tipo:"ap", q:"Reescreva “Vendem casas” na voz passiva sintética com “se” e diga com o que o verbo concorda.",
+     modelo:"“Vendem-se casas.” O verbo concorda com o sujeito “casas” (plural) — por isso “vendem”. O “se” é partícula apassivadora.",
+     chk:["Eu escrevi “Vendem-se casas”?","Eu disse que o verbo concorda com o sujeito “casas”?"]},
+    {tipo:"ap", q:"Classifique o “se” em “Precisa-se de pessoas sensíveis” e explique por que o verbo fica no singular.",
+     modelo:"O “se” é índice de indeterminação do sujeito. O verbo “precisar de” é transitivo indireto (tem “de”), então não há sujeito para concordar e o verbo fica no singular.",
+     chk:["Eu classifiquei como índice de indeterminação do sujeito?","Eu liguei o singular ao verbo transitivo indireto (sem sujeito definido)?"]},
+    {tipo:"ap", q:"Crie uma frase SUA com “se” recíproco (um ao outro) e outra com “se” reflexivo (a si mesmo).",
+     modelo:"Recíproco: Os líderes cumprimentaram-se antes da reunião (um ao outro). Reflexivo: A menina penteou-se no espelho (a si mesma).",
+     chk:["Minha frase recíproca mostra ação de um ao outro?","Minha frase reflexiva mostra ação sobre o próprio sujeito (a si mesmo)?"]}
+  ]
+},
+{
+  badge:"CASO 8 · LAUDO DO “SE”", titulo:"“se” parte do verbo e partícula de realce",
+  tags:["se","Verbo pronominal","Realce"],
+  texto:[
+    "Falta desmascarar os dois “se” mais escorregadios. A <b>partícula integrante do verbo pronominal</b> acompanha um verbo que <b>só existe com o “se”</b> — os essencialmente pronominais: <b>queixar-se, arrepender-se, orgulhar-se, indignar-se, zangar-se, apiedar-se</b>. Aqui o “se” <b>faz parte do verbo</b> e <b>não pode ser retirado</b>: “Os embaixadores queixaram-<b>se</b> da falta de acordo.”",
+    "A <b>partícula de realce</b> (ou expletiva) é o oposto: ela <b>só enfatiza</b> e <b>pode ser retirada</b> sem mudar o sentido nem a estrutura — o verbo existe sem ela. “Os governantes riram-<b>se</b> das propostas” = “Os governantes riram das propostas”. “Chegou-<b>se</b> ao palanque.”",
+    "Truque de perito: <b>tire o “se”</b>. Se o verbo continua existindo e o sentido não muda, era <b>realce</b>. Se o verbo “quebra” (arrepender ≠ arrepender-se), o “se” era <b>parte do verbo</b>."
+  ],
+  perguntas:[
+    {tipo:"ap", q:"Escreva uma frase SUA com um verbo pronominal (queixar-se, arrepender-se ou orgulhar-se) e explique por que o “se” não pode ser retirado.",
+     modelo:"Exemplo: Os soldados arrependeram-se da violência. Não dá para tirar o “se”, porque “arrepender” só existe como “arrepender-se” — o “se” é parte do verbo.",
+     chk:["Minha frase usa um verbo pronominal (queixar-se/arrepender-se/orgulhar-se)?","Eu expliquei que o “se” é parte do verbo e não pode ser retirado?"]},
+    {tipo:"ap", q:"Na frase “Os governantes riram-se das propostas”, tire o “se” e diga se o sentido muda. Que função é essa?",
+     modelo:"“Os governantes riram das propostas.” O sentido não muda — o verbo “rir” existe sem o “se”. Logo, o “se” é partícula de realce (expletiva).",
+     chk:["Eu tirei o “se” e vi que o sentido não muda?","Eu classifiquei como partícula de realce (expletiva)?"]},
+    {tipo:"co", q:"Explique a diferença entre a partícula integrante do verbo e a partícula de realce.",
+     modelo:"Na partícula integrante do verbo, o “se” faz parte do verbo pronominal e não pode ser tirado (arrepender-se). Na partícula de realce, o “se” só enfatiza e pode ser retirado sem mudar o sentido (rir-se = rir).",
+     chk:["Eu disse que a integrante NÃO pode ser retirada (parte do verbo)?","Eu disse que a de realce PODE ser retirada sem mudar o sentido?"]}
+  ]
+}
+];
+
+/* ---------------- ESTADO E ARMAZENAMENTO ---------------- */
+const KEY="pericia_lg";
+let mem={}; // fallback
+function load(){ try{ const r=localStorage.getItem(KEY); return r?JSON.parse(r):{}; }catch(e){ return mem[KEY]||{}; } }
+function save(){ try{ localStorage.setItem(KEY,JSON.stringify(STATE)); }catch(e){ mem[KEY]=STATE; } updateSaveInfo(); }
+let STATE=load();
+if(!STATE.blocos) STATE={blocos:{}, ts:null};
+
+function updateSaveInfo(){
+  STATE.ts=new Date().toISOString();
+  const d=new Date(STATE.ts);
+  document.getElementById('saveinfo').textContent="Salvo automaticamente às "+d.toLocaleTimeString('pt-BR')+" ("+d.toLocaleDateString('pt-BR')+").";
+}
+
+/* ---------------- ANTICÓPIA ---------------- */
+function norm(s){
+  return (s||"").toLowerCase()
+    .normalize("NFD").replace(/[̀-ͯ]/g,"")
+    .replace(/[^a-z0-9\s]/g," ")
+    .replace(/\s+/g," ").trim().split(" ").filter(Boolean);
+}
+// maior sequência contígua de ans a partir de i que aparece em target
+function contigLen(ans,i,target){
+  let best=0;
+  for(let j=0;j<target.length;j++){
+    if(target[j]===ans[i]){
+      let L=1;
+      while(i+L<ans.length && j+L<target.length && ans[i+L]===target[j+L]) L++;
+      if(L>best) best=L;
+    }
+  }
+  return best;
+}
+// retorna {transcrita, ratio, maxRun}
+function checaCopia(resp, blocoTxt, enunciado){
+  const ans=norm(resp), blk=norm(blocoTxt), enu=norm(enunciado);
+  if(ans.length<4) return {transcrita:false,ratio:0,maxRun:0};
+  let copied=new Array(ans.length).fill(false), maxRun=0, i=0;
+  while(i<ans.length){
+    const L=contigLen(ans,i,blk);
+    if(L>=5){
+      const Le=contigLen(ans,i,enu); // mesma sequência está na pergunta?
+      if(Le<L){ // não totalmente explicada pelo enunciado
+        for(let k=i;k<i+L;k++) copied[k]=true;
+        if(L>maxRun) maxRun=L;
+        i+=L; continue;
+      }
+    }
+    i++;
+  }
+  const ratio=copied.filter(Boolean).length/ans.length;
+  const transcrita = (maxRun>=8) || (ratio>0.60);
+  return {transcrita, ratio, maxRun};
+}
+
+/* ---------------- RENDER ---------------- */
+const cont=document.getElementById('blocks');
+BLOCOS.forEach((b,bi)=>{
+  const sec=document.createElement('div'); sec.className='block'; sec.id='b'+bi;
+  let qs="";
+  b.perguntas.forEach((p,pi)=>{
+    const tlabel = p.tipo==='ap' ? '<span class="qtype ap">APLICAÇÃO</span>' : '<span class="qtype co">CONCEITO</span>';
+    let chkHtml="";
+    p.chk.forEach((c,ci)=>{
+      chkHtml+=`<div class="item"><div class="q2">${c}</div><div class="opts">
+        <button class="sim" onclick="setChk(${bi},${pi},${ci},1)">Sim</button>
+        <button class="nao" onclick="setChk(${bi},${pi},${ci},0)">Não</button></div></div>`;
+    });
+    qs+=`<div class="q" id="q${bi}_${pi}">
+      <div><span class="qn">Pergunta ${pi+1}</span>${tlabel}</div>
+      <div style="margin-top:4px">${p.q}</div>
+      <textarea id="t${bi}_${pi}" placeholder="Escreva com as suas palavras…" oninput="onType(${bi})"></textarea>
+      <div class="warn" id="w${bi}_${pi}">✋ Boa parte da sua resposta está igual ao texto. Tente reescrever com as SUAS palavras — explique como se fosse para um amigo, sem olhar o texto. Pode ficar mais curto e simples: o que vale é ser SEU.</div>
+      <div class="redflag" id="r${bi}_${pi}">🔴 Esta resposta continua muito parecida com o texto. Ela foi aceita, mas ficou marcada para revisar. Reescreva com as suas palavras a qualquer momento para limpar a marca.</div>
+      <div class="modelo" id="m${bi}_${pi}"><div class="lab">RESPOSTA MODELO</div><div>${p.modelo}</div></div>
+      <div class="chk" id="c${bi}_${pi}"><div class="lab" style="font-size:.72rem;font-weight:700;letter-spacing:.08em;color:var(--pista)">AUTOAVALIAÇÃO — minha resposta disse que…</div>${chkHtml}</div>
+    </div>`;
+  });
+  sec.innerHTML=`
+    <div class="head"><span class="badge">${b.badge}</span><div><h2>${b.titulo}</h2>
+      <div class="tags">${b.tags.map(t=>'<span>'+t+'</span>').join('')}</div></div></div>
+    <div class="body" id="body${bi}">
+      ${b.texto.map(t=>'<p>'+t+'</p>').join('')}
+      ${qs}
+      <button class="btn primary" id="conf${bi}" onclick="conferir(${bi})" disabled>🔎 Conferir Caso ${bi+1}</button>
+      <div class="bstatus" id="st${bi}"></div>
+    </div>`;
+  cont.appendChild(sec);
+});
+
+/* trava dos blocos seguintes */
+function lockUI(){
+  BLOCOS.forEach((b,bi)=>{
+    const sec=document.getElementById('b'+bi);
+    const prevDone = bi===0 || (STATE.blocos[bi-1] && STATE.blocos[bi-1].done);
+    let msg=sec.querySelector('.lockmsg');
+    if(!prevDone){
+      sec.querySelector('.body').classList.add('locked');
+      if(!msg){ msg=document.createElement('div'); msg.className='lockmsg';
+        msg.textContent="🔒 Conclua o Caso "+bi+" para abrir este."; sec.appendChild(msg); }
+    }else{
+      sec.querySelector('.body').classList.remove('locked');
+      if(msg) msg.remove();
+    }
+  });
+}
+
+function onType(bi){
+  let all=true;
+  BLOCOS[bi].perguntas.forEach((p,pi)=>{
+    const v=document.getElementById('t'+bi+'_'+pi).value.trim();
+    if(v.length<3) all=false;
+  });
+  document.getElementById('conf'+bi).disabled=!all;
+  // salva rascunho
+  const st=STATE.blocos[bi]||(STATE.blocos[bi]={perg:{},done:false});
+  BLOCOS[bi].perguntas.forEach((p,pi)=>{
+    const v=document.getElementById('t'+bi+'_'+pi).value;
+    st.perg[pi]=st.perg[pi]||{}; st.perg[pi].resp=v;
+  });
+  save();
+}
+
+function conferir(bi){
+  const st=STATE.blocos[bi]||(STATE.blocos[bi]={perg:{},done:false});
+  let podeFechar=true;
+  BLOCOS[bi].perguntas.forEach((p,pi)=>{
+    const ta=document.getElementById('t'+bi+'_'+pi);
+    const resp=ta.value.trim();
+    const pst=st.perg[pi]||(st.perg[pi]={});
+    pst.resp=ta.value;
+    const bloctxt=BLOCOS[bi].texto.join(" ");
+    const r=checaCopia(resp,bloctxt,p.q);
+    const warn=document.getElementById('w'+bi+'_'+pi);
+    const red=document.getElementById('r'+bi+'_'+pi);
+    const qbox=document.getElementById('q'+bi+'_'+pi);
+
+    if(r.transcrita && !pst.tentou){
+      // 1ª detecção → não aceita ainda
+      pst.tentou=resp; pst.aceita=false;
+      warn.style.display='block'; red.style.display='none';
+      qbox.classList.remove('red');
+      podeFechar=false;
+    } else if(r.transcrita && pst.tentou){
+      // 2ª tentativa (ou mais) ainda transcrita → aceita mas vermelha
+      pst.aceita=true; pst.transcrita=true;
+      warn.style.display='none'; red.style.display='block';
+      qbox.classList.add('red');
+      revelar(bi,pi);
+    } else {
+      // ok (ou reescreveu e limpou a marca)
+      pst.aceita=true; pst.transcrita=false;
+      warn.style.display='none'; red.style.display='none';
+      qbox.classList.remove('red');
+      revelar(bi,pi);
+    }
+  });
+  if(podeFechar){
+    // todas aceitas → mostra modelo/checklist e libera próximo
+    st.conferido=true;
+    recalcBloco(bi);
+  }
+  save();
+  lockUI();
+  atualizarProgresso();
+  montarRevisao();
+}
+
+function revelar(bi,pi){
+  document.getElementById('m'+bi+'_'+pi).style.display='block';
+  document.getElementById('c'+bi+'_'+pi).style.display='block';
+  // restaura marcação do checklist
+  const pst=(STATE.blocos[bi]&&STATE.blocos[bi].perg[pi])||{};
+  if(pst.chk){ pst.chk.forEach((v,ci)=>{ if(v!==null&&v!==undefined) paintChk(bi,pi,ci,v); }); }
+}
+
+function setChk(bi,pi,ci,val){
+  const st=STATE.blocos[bi]||(STATE.blocos[bi]={perg:{},done:false});
+  const pst=st.perg[pi]||(st.perg[pi]={});
+  pst.chk=pst.chk||[];
+  pst.chk[ci]=val;
+  paintChk(bi,pi,ci,val);
+  recalcBloco(bi);
+  save(); montarRevisao();
+}
+function paintChk(bi,pi,ci,val){
+  const item=document.querySelectorAll('#c'+bi+'_'+pi+' .item')[ci];
+  if(!item) return;
+  item.querySelector('.sim').classList.toggle('on',val===1);
+  item.querySelector('.nao').classList.toggle('on',val===0);
+}
+
+function recalcBloco(bi){
+  const st=STATE.blocos[bi]; if(!st||!st.conferido) return;
+  let temNao=false, temVermelho=false, respondidoTudo=true;
+  BLOCOS[bi].perguntas.forEach((p,pi)=>{
+    const pst=st.perg[pi]||{};
+    if(pst.transcrita) temVermelho=true;
+    p.chk.forEach((c,ci)=>{
+      const v=pst.chk?pst.chk[ci]:undefined;
+      if(v===undefined) respondidoTudo=false;
+      if(v===0) temNao=true;
+    });
+  });
+  st.done=true; // conferido libera o próximo caso
+  const el=document.getElementById('st'+bi);
+  el.style.display='block';
+  if(!respondidoTudo){
+    el.className='bstatus rev'; el.textContent="Quase lá — marque toda a autoavaliação (Sim/Não) para fechar o caso.";
+  } else if(temNao || temVermelho){
+    el.className='bstatus rev'; el.textContent="🔁 Caso para revisar: veja os pontos vermelhos ou com “não”. Depois siga.";
+    st.status='revisar';
+  } else {
+    el.className='bstatus ok'; el.textContent="✅ Caso resolvido com segurança! Pode seguir para o próximo.";
+    st.status='ok';
+  }
+}
+
+function atualizarProgresso(){
+  let done=0; BLOCOS.forEach((b,bi)=>{ if(STATE.blocos[bi]&&STATE.blocos[bi].done) done++; });
+  document.getElementById('pbar').style.width=(done/BLOCOS.length*100)+'%';
+  document.getElementById('ptxt').textContent=done+" de "+BLOCOS.length+" casos concluídos.";
+}
+
+function montarRevisao(){
+  const box=document.getElementById('revlist'), ul=document.getElementById('revitems');
+  ul.innerHTML=""; let n=0;
+  BLOCOS.forEach((b,bi)=>{
+    const st=STATE.blocos[bi]; if(!st) return;
+    b.perguntas.forEach((p,pi)=>{
+      const pst=st.perg[pi]||{};
+      const nao = pst.chk && pst.chk.some(v=>v===0);
+      if(pst.transcrita || nao){
+        const li=document.createElement('li');
+        li.textContent="Caso "+(bi+1)+" · Pergunta "+(pi+1)+(pst.transcrita?" (resposta muito parecida com o texto)":"")+(nao?" (autoavaliação com “não”)":"");
+        ul.appendChild(li); n++;
+      }
+    });
+  });
+  box.style.display = n>0 ? 'block':'none';
+}
+
+/* ---------------- RESTAURAR ---------------- */
+function restaurar(){
+  BLOCOS.forEach((b,bi)=>{
+    const st=STATE.blocos[bi]; if(!st) return;
+    b.perguntas.forEach((p,pi)=>{
+      const pst=st.perg[pi]||{};
+      if(pst.resp!==undefined) document.getElementById('t'+bi+'_'+pi).value=pst.resp;
+      if(pst.aceita){
+        if(pst.transcrita){ document.getElementById('r'+bi+'_'+pi).style.display='block'; document.getElementById('q'+bi+'_'+pi).classList.add('red'); }
+        revelar(bi,pi);
+      }
+    });
+    if(st.conferido) recalcBloco(bi);
+    onType(bi);
+  });
+  lockUI(); atualizarProgresso(); montarRevisao();
+  if(STATE.ts){ const d=new Date(STATE.ts); document.getElementById('saveinfo').textContent="Salvo automaticamente às "+d.toLocaleTimeString('pt-BR')+" ("+d.toLocaleDateString('pt-BR')+")."; }
+}
+
+/* ---------------- EXPORT / IMPORT / RESET ---------------- */
+function doExport(){
+  const blob=new Blob([JSON.stringify(STATE,null,2)],{type:"application/json"});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download="pericia_leitura-guiada.json"; a.click(); URL.revokeObjectURL(a.href);
+}
+function doImport(ev){
+  const f=ev.target.files[0]; if(!f) return;
+  const rd=new FileReader();
+  rd.onload=()=>{ try{ STATE=JSON.parse(rd.result); if(!STATE.blocos)STATE.blocos={}; save(); location.reload(); }catch(e){ openModal("Arquivo inválido","Não consegui ler esse arquivo. Verifique se é o .json exportado aqui.",null); } };
+  rd.readAsText(f);
+}
+/* modal */
+let modalCb=null;
+function openModal(t,x,cb){ document.getElementById('mtit').textContent=t; document.getElementById('mtxt').textContent=x;
+  modalCb=cb; document.getElementById('mok').style.display=cb?'inline-block':'none';
+  document.getElementById('modalbg').style.display='flex'; }
+function closeModal(){ document.getElementById('modalbg').style.display='none'; modalCb=null; }
+document.getElementById('mok').onclick=()=>{ if(modalCb) modalCb(); closeModal(); };
+function askReset(){ openModal("Zerar tudo?","Isto apaga todas as respostas e recomeça do zero. Tem certeza?",()=>{ try{localStorage.removeItem(KEY);}catch(e){} mem={}; STATE={blocos:{},ts:null}; location.reload(); }); }
+
+restaurar();
+</script>
+</body>
+</html>

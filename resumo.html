@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perícia das Palavras · Resumo</title>
+<style>
+:root{--bg:#0a1120;--panel:#111d33;--panel2:#0e1830;--ink:#e9f0fb;--muted:#93a6c4;
+--lupa:#35f0a0;--lupa-d:#12b877;--pista:#ffb020;--alerta:#ff5a76;--line:#243654;--shadow:0 10px 30px rgba(0,0,0,.45);}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(1200px 700px at 80% -10%,#12233f 0,var(--bg) 60%);color:var(--ink);font-family:"Segoe UI",system-ui,sans-serif;line-height:1.6}
+.wrap{max-width:900px;margin:0 auto;padding:20px 16px 90px}
+header.top{background:linear-gradient(120deg,#0e2a45,#12507a 60%,#1a9fd0);border-radius:18px;padding:22px 24px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+header.top:before{content:"🗺️";position:absolute;right:14px;top:-4px;font-size:76px;opacity:.16}
+header.top h1{margin:0 0 4px;font-size:1.5rem;color:#02121e}
+header.top .sub{color:#04202f;font-weight:600}
+.kick{display:inline-block;background:#02121e;color:#8fe3ff;font-size:.72rem;font-weight:700;letter-spacing:.12em;padding:4px 10px;border-radius:999px;margin-bottom:8px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px 20px;margin:16px 0;box-shadow:var(--shadow)}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+.btn{background:#16264180;color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:8px 14px;font-size:.9rem;cursor:pointer}
+.btn:hover{border-color:var(--lupa);color:var(--lupa)}
+.saveinfo{font-size:.78rem;color:var(--muted)}
+h2.sec{margin:28px 0 8px;font-size:1.3rem;border-left:4px solid var(--lupa);padding-left:12px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin:12px 0;box-shadow:var(--shadow)}
+.card h3{margin:0 0 8px;color:var(--lupa)}
+.ex{background:#0c1730;border-left:3px solid var(--lupa);border-radius:8px;padding:8px 12px;margin:8px 0;font-size:.94rem}
+.ex b{color:var(--lupa)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:640px){.grid{grid-template-columns:1fr}}
+.flip{perspective:1000px;height:190px;cursor:pointer}
+.flip .inner{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
+.flip.on .inner{transform:rotateY(180deg)}
+.flip .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:14px;border:1px solid var(--line);padding:14px 16px;display:flex;flex-direction:column;justify-content:center;box-shadow:var(--shadow)}
+.flip .front{background:linear-gradient(135deg,#0e2a45,#123a2e)}
+.flip .front h3{margin:0;color:#fff}
+.flip .front .hint{font-size:.74rem;color:var(--muted);margin-top:8px}
+.flip .back{background:var(--panel2);transform:rotateY(180deg);overflow:auto;font-size:.9rem}
+table{width:100%;border-collapse:collapse;margin-top:8px;font-size:.9rem}
+th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+th{background:#0c1730;color:var(--lupa)}
+.postit{background:#f5d76e;color:#3a2e05;border-radius:10px;padding:12px 14px;margin:10px 0;box-shadow:var(--shadow);font-weight:600;transform:rotate(-.6deg)}
+.peg{background:#2a0a12;border:1px solid var(--alerta);border-radius:10px;padding:12px 14px;margin:10px 0;color:#ffc2ce}
+.peg b{color:#ff9db0}
+.gloss dt{font-weight:700;color:var(--pista);margin-top:8px}
+.gloss dd{margin:0 0 4px 0;color:var(--ink)}
+.jump{display:block;width:100%;text-align:center;background:linear-gradient(120deg,var(--lupa-d),var(--lupa));color:#04140d;font-weight:700;text-decoration:none;padding:14px;border-radius:12px;margin-top:20px}
+.nav{display:flex;justify-content:space-between;margin-top:22px;flex-wrap:wrap;gap:10px}
+a.next,a.prev{display:inline-block;text-decoration:none;padding:11px 18px;border-radius:12px;font-weight:700}
+a.next{background:linear-gradient(120deg,var(--lupa-d),var(--lupa));color:#04140d}
+a.prev{background:#16264180;color:var(--ink);border:1px solid var(--line)}
+.foot{text-align:center;color:var(--muted);font-size:.8rem;margin-top:30px}
+.modal-bg{position:fixed;inset:0;background:rgba(4,8,18,.7);display:none;align-items:center;justify-content:center;z-index:50;padding:20px}
+.modal{background:var(--panel);border:1px solid var(--line);border-radius:16px;max-width:440px;padding:22px;box-shadow:var(--shadow)}
+.modal .row{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span class="kick">PERÍCIA DAS PALAVRAS · ARQUIVO CENTRAL</span>
+    <h1>🗺️ Resumo — Fichas do perito</h1>
+    <div class="sub">Tudo o que cai na prova, organizado para consultar rápido</div>
+  </header>
+
+  <div class="panel"><div class="bar">
+    <div><strong>Painel</strong><div class="saveinfo" id="saveinfo">Leitura salva sozinha.</div></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn" onclick="doExport()">📥 Exportar</button>
+      <button class="btn" onclick="document.getElementById('imp').click()">📤 Importar</button>
+      <button class="btn" onclick="askReset()">🗑️ Zerar</button>
+      <input type="file" id="imp" accept="application/json" style="display:none" onchange="doImport(event)">
+    </div></div>
+    <div class="saveinfo" id="rol" style="margin-top:6px">Você já leu 0% do resumo.</div>
+  </div>
+
+  <!-- CITAÇÃO -->
+  <h2 class="sec">🔖 Citação</h2>
+  <div class="card">
+    <h3>O que é e para que serve</h3>
+    <p>Citar é <b>trazer a fala, a ideia ou os dados de outra fonte</b> (autor, especialista, pesquisa) para dentro do texto. Serve para dar <b>credibilidade</b> e <b>autoridade</b> ao argumento — é como mostrar uma testemunha confiável.</p>
+    <div class="ex"><b>Discurso direto:</b> a fala literal, entre aspas. Ex.: Guterres afirmou: “Na guerra, não há vencedores”.</div>
+    <div class="ex"><b>Discurso indireto:</b> a ideia contada com as palavras do autor. Ex.: Guterres afirmou que, na guerra, ninguém vence.</div>
+    <div class="postit">📌 Regra de ouro: a fonte tem que estar <u>certa</u> (autor e obra) e a citação tem que <u>combinar com o tema</u>. Citação trocada ou solta empobrece o texto.</div>
+    <p><b>Uso de dados:</b> números e índices de um <b>órgão confiável</b> também são citação — aproximam o texto da realidade. A fonte dos dados deve ser indicada para o leitor conferir.</p>
+  </div>
+
+  <!-- FUNÇÕES DO QUE -->
+  <h2 class="sec">🔍 Funções da palavra “que”</h2>
+  <p class="saveinfo">Toque nas fichas para virar e ver o exemplo + como reconhecer.</p>
+  <div class="grid" id="flipQue"></div>
+
+  <div class="card">
+    <h3>⚖️ O duelo que mais cai: pronome relativo × conjunção integrante</h3>
+    <table>
+      <tr><th></th><th>Pronome relativo</th><th>Conjunção integrante</th></tr>
+      <tr><td><b>Tem antecedente?</b></td><td>SIM (um nome antes)</td><td>NÃO</td></tr>
+      <tr><td><b>Cabe “o qual”?</b></td><td>SIM</td><td>NÃO</td></tr>
+      <tr><td><b>Que oração introduz?</b></td><td>adjetiva (caracteriza o nome)</td><td>substantiva (completa o verbo)</td></tr>
+      <tr><td><b>Teste rápido</b></td><td>troca por “o qual”</td><td>a oração troca por “isso”</td></tr>
+      <tr><td><b>Exemplo</b></td><td>O país <b>que</b> venceu…</td><td>Sei <b>que</b> o país venceu.</td></tr>
+    </table>
+    <div class="peg"><b>Pegadinha:</b> numa frase só podem aparecer os dois! Em “As pessoas <b>que</b> acham <b>que</b> vão vencer”, o 1º é <b>relativo</b> (antecedente “as pessoas”) e o 2º é <b>integrante</b> (completa “acham”).</div>
+  </div>
+
+  <!-- FUNÇÕES DO SE -->
+  <h2 class="sec">🕵️ Funções da palavra “se”</h2>
+  <div class="card">
+    <table>
+      <tr><th>Função do “se”</th><th>Exemplo</th><th>Como reconhecer</th></tr>
+      <tr><td><b>Conjunção integrante</b></td><td>Não sei <b>se</b> ele virá.</td><td>Completa o verbo (saber, perguntar, duvidar). Troca por “isso”.</td></tr>
+      <tr><td><b>Conjunção condicional</b></td><td><b>Se</b> chover, ficaremos em casa.</td><td>Abre uma condição (se… então).</td></tr>
+      <tr><td><b>Pronome reflexivo</b></td><td>Ele <b>se</b> feriu.</td><td>Ação sobre o próprio sujeito (a si mesmo).</td></tr>
+      <tr><td><b>Pronome recíproco</b></td><td>Eles <b>se</b> abraçaram.</td><td>Troca mútua (um ao outro).</td></tr>
+      <tr><td><b>Partícula apassivadora</b></td><td>Vendem-<b>se</b> casas.</td><td>Verbo transitivo direto; voz passiva; verbo concorda com o sujeito.</td></tr>
+      <tr><td><b>Índice de indeterminação do sujeito</b></td><td>Precisa-<b>se</b> de ajuda.</td><td>Verbo transitivo indireto/intransitivo; verbo no singular; sujeito indefinido.</td></tr>
+      <tr><td><b>Partícula integrante do verbo</b></td><td>Ele <b>se</b> arrependeu.</td><td>Verbo só existe com “se” (arrepender-se). Não dá para tirar.</td></tr>
+      <tr><td><b>Partícula de realce</b></td><td>Riram-<b>se</b> de tudo.</td><td>Só enfatiza; dá para tirar sem mudar o sentido.</td></tr>
+    </table>
+    <div class="postit">📌 Truque decisivo do “se”: <u>tire o “se”</u>. Se o verbo continua e o sentido não muda → <b>realce</b>. Se o verbo quebra (arrepender ≠ arrepender-se) → <b>parte do verbo</b>.</div>
+    <div class="peg"><b>Pegadinha:</b> “Vende-se casa” (singular) × “Vendem-se casas” (plural). Com verbo transitivo direto é <b>apassivadora</b> e o verbo <b>concorda com o sujeito</b>. Já “Precisa-se de casas” fica no <b>singular</b> — é <b>indeterminação do sujeito</b>.</div>
+  </div>
+
+  <!-- GLOSSÁRIO -->
+  <h2 class="sec">📚 Glossário do perito</h2>
+  <div class="card">
+    <dl class="gloss">
+      <dt>Antecedente</dt><dd>O nome que vem antes do “que” e que o pronome relativo retoma.</dd>
+      <dt>Oração subordinada adjetiva</dt><dd>Oração introduzida por pronome relativo que caracteriza um nome (funciona como um adjetivo).</dd>
+      <dt>Oração subordinada substantiva</dt><dd>Oração introduzida por conjunção integrante que completa o sentido de um verbo ou nome.</dd>
+      <dt>Voz passiva sintética</dt><dd>Voz passiva feita com “se” + verbo transitivo direto (Vendem-se casas = casas são vendidas).</dd>
+      <dt>Verbo pronominal</dt><dd>Verbo que só existe acompanhado de pronome (arrepender-se, queixar-se, orgulhar-se).</dd>
+      <dt>Discurso direto / indireto</dt><dd>Direto = fala literal entre aspas; indireto = a ideia contada com as palavras do autor.</dd>
+    </dl>
+  </div>
+
+  <a class="jump" href="simulado.html">Fechei o resumo — quero encarar o 📝 Simulado! →</a>
+
+  <div class="nav">
+    <a class="prev" href="quiz.html">← Quiz</a>
+    <a class="next" href="simulado.html">Próximo: 📝 Simulado →</a>
+  </div>
+  <div class="foot">Perícia das Palavras · Resumo · jovem aprendiz</div>
+</div>
+
+<div class="modal-bg" id="modalbg"><div class="modal"><h3 id="mtit"></h3><p id="mtxt" style="color:var(--muted)"></p>
+  <div class="row"><button class="btn" onclick="closeModal()">Cancelar</button><button class="btn primary" id="mok" style="background:linear-gradient(120deg,var(--lupa-d),var(--lupa));color:#04140d;font-weight:700;border:none">OK</button></div></div></div>
+
+<script>
+const FLIPS=[
+ {t:"Pronome relativo",h:"retoma um nome + oração adjetiva",b:"Retoma um <b>antecedente</b> e introduz oração <b>adjetiva</b>. Cabe “o qual”.<br><br><i>Ex.: Os países <b>que</b> assinaram o tratado…</i>"},
+ {t:"Conjunção integrante",h:"completa o verbo",b:"Sem antecedente. Introduz oração <b>substantiva</b> que completa o verbo. Troca por “isso”.<br><br><i>Ex.: Todos afirmaram <b>que</b> lutarão pela paz.</i>"},
+ {t:"Conj. subordinativa (adverbial)",h:"circunstância: consequência, causa…",b:"Liga oração que mostra uma <b>circunstância</b>. A mais cobrada é a <b>consecutiva</b> (tão… que = consequência).<br><br><i>Ex.: Ficou tão surpreso <b>que</b> derrubou o prato.</i>"},
+ {t:"Conjunção coordenativa",h:"vale por e / mas / pois",b:"Liga orações independentes. Pode valer <b>e</b> (aditiva), <b>mas</b> (adversativa) ou <b>pois</b> (explicativa).<br><br><i>Ex.: Mantenha a fé, <b>que</b> (=pois) o amanhã promete.</i>"},
+ {t:"Advérbio de intensidade",h:"equivale a “quão”",b:"Intensifica um adjetivo/advérbio.<br><br><i>Ex.: <b>Que</b> lindo ficou o mural!</i>"},
+ {t:"Substantivo / realce",h:"“um quê de…”",b:"Como substantivo, vem com artigo: “um <b>quê</b> de mistério”. Também pode ser palavra de realce.<br><br><i>Ex.: Há um <b>quê</b> de esperança no ar.</i>"}
+];
+const g=document.getElementById('flipQue');
+FLIPS.forEach((f,i)=>{
+  const d=document.createElement('div');d.className='flip';d.onclick=()=>d.classList.toggle('on');
+  d.innerHTML=`<div class="inner"><div class="face front"><h3>${f.t}</h3><div class="hint">${f.h} · toque para virar</div></div>
+    <div class="face back">${f.b}</div></div>`;
+  g.appendChild(d);
+});
+
+/* ---- salvar rolagem máxima ---- */
+const KEY="pericia_resumo";let mem={};
+function load(){try{const r=localStorage.getItem(KEY);return r?JSON.parse(r):null;}catch(e){return mem[KEY]||null;}}
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(STATE));}catch(e){mem[KEY]=STATE;}}
+let STATE=load()||{rolagem:0,ts:null};
+function pctScroll(){const h=document.documentElement.scrollHeight-window.innerHeight;if(h<=0)return 100;return Math.min(100,Math.round(window.scrollY/h*100));}
+function onScroll(){const p=pctScroll();if(p>STATE.rolagem){STATE.rolagem=p;STATE.ts=new Date().toISOString();persist();}
+  document.getElementById('rol').textContent="Você já leu "+STATE.rolagem+"% do resumo.";}
+window.addEventListener('scroll',onScroll,{passive:true});
+document.getElementById('rol').textContent="Você já leu "+STATE.rolagem+"% do resumo.";
+if(STATE.ts){const d=new Date(STATE.ts);document.getElementById('saveinfo').textContent="Salvo às "+d.toLocaleTimeString('pt-BR')+".";}
+
+function doExport(){const blob=new Blob([JSON.stringify(STATE,null,2)],{type:"application/json"});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download="pericia_resumo.json";a.click();URL.revokeObjectURL(a.href);}
+function doImport(ev){const f=ev.target.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>{try{STATE=JSON.parse(rd.result);persist();location.reload();}catch(e){openModal("Arquivo inválido","Não consegui ler esse arquivo.",null);}};rd.readAsText(f);}
+let modalCb=null;
+function openModal(t,x,cb){document.getElementById('mtit').textContent=t;document.getElementById('mtxt').textContent=x;modalCb=cb;document.getElementById('mok').style.display=cb?'inline-block':'none';document.getElementById('modalbg').style.display='flex';}
+function closeModal(){document.getElementById('modalbg').style.display='none';modalCb=null;}
+document.getElementById('mok').onclick=()=>{if(modalCb)modalCb();closeModal();};
+function askReset(){openModal("Zerar o resumo?","Isto apaga o quanto você já leu. Recomeçar?",()=>{try{localStorage.removeItem(KEY);}catch(e){}mem={};location.reload();});}
+</script>
+</body>
+</html>
